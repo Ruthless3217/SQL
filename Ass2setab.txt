@@ -1,0 +1,259 @@
+Que1: 
+postgres=# create table Emp1(Empno int primary key,name varchar(20),address varchar(30),salary int,deptno int); CREATE TABLE postgres=# \d Emp1; 
+                       Table "public.emp1" 
+ Column  |         Type          | Collation | Nullable | Default ---------+-----------------------+-----------+----------+---------  empno   | integer               |           | not null |  name    | character varying(20) |           |          |  address | character varying(30) |           |          |  salary  | integer               |           |          |  deptno  | integer               |           |          | 
+Indexes: 
+    "emp1_pkey" PRIMARY KEY, btree (empno) 
+ 
+ 
+postgres=# insert into Emp1 values(1,'priti','Dehu',50000,2); INSERT 0 1 postgres=# insert into Emp1 values(2,'priyanka','chikhali',30000,2); INSERT 0 1 postgres=# insert into Emp1 values(3,'vidya','Akurdi',35000,1); INSERT 0 1 postgres=# insert into Emp1 values(4,'sakshi','moshi',40000,3); INSERT 0 1 postgres=# insert into Emp1 values(5,'mrunal','khed',45000,4); INSERT 0 1 postgres=# insert into Emp1 values(5,'mrunal','khed',45000,1); postgres=# insert into Emp1 values(7,'mohini','bhosari',55000,6); INSERT 0 1 postgres=# insert into Emp1 values(8,'rahul','bhosari',50000,7); INSERT 0 1 postgres=# insert into Emp1 values(9,'Ram','pune',60000,1); INSERT 0 1 postgres=# insert into Emp1 values(10,'nikita','hadpasar',30000,5); INSERT 0 1 postgres=# select *from Emp1;  empno |   name   | address  | salary | deptno 
+-------+----------+----------+--------+-------- 
+1	| priti    | Dehu     |  50000 |      2 
+2	| priyanka | chikhali |  30000 |      2 
+3	| vidya    | Akurdi   |  35000 |      1 
+4	| sakshi   | moshi    |  40000 |      3 
+5	| mrunal   | khed     |  45000 |      4 
+6	| mrunal   | khed     |  45000 |      1 
+7	| mohini   | bhosari  |  55000 |      6 
+8	| rahul    | bhosari  |  50000 |      7 
+9	| Ram      | pune     |  60000 |      1 
+10	| nikita   | hadpasar |  30000 |      5 
+(10 rows) 
+ 
+ 
+postgres=# select empno,name from Emp1;  empno |   name 
+-------+---------- 
+1	| priti 
+2	| priyanka 
+3	| vidya 
+4	| sakshi 
+5	| mrunal 
+6	| mrunal 
+7	| mohini 
+8	| rahul 
+9	| Ram 
+10	| nikita 
+(10 rows) 
+ 
+ 
+postgres=# select *from Emp1 where deptno=1;  empno |  name  | address | salary | deptno 
+-------+--------+---------+--------+--------      3 | vidya  | Akurdi  |  35000 |      1 
+     6 | mrunal | khed    |  45000 |      1 
+     9 | Ram    | pune    |  60000 |      1 
+(3 rows) postgres=# select *from Emp1 where address='pune' and salary>30000;  empno | name | address | salary | deptno 
+-------+------+---------+--------+--------      9 | Ram  | pune    |  60000 |      1 
+(1 row) 
+ 
+ 
+postgres=# select *from Emp1 where address='pune' and salary between 30000 and 20000;  empno | name | address | salary | deptno 
+-------+------+---------+--------+-------- 
+ 
+postgres=# select *from Emp1 where name like 'm%';  empno |  name  | address | salary | deptno 
+-------+--------+---------+--------+--------      5 | mrunal | khed    |  45000 |      4 
+6	| mrunal | khed    |  45000 |      1 
+7	| mohini | bhosari |  55000 |      6 
+(3 rows) 
+postgres=# select *from Emp1 where salary is null;  empno | name | address | salary | deptno 
+-------+------+---------+--------+-------- 
+(0 rows) 
+ 
+ 
+postgres=# select *from Emp1 order by empno;  empno |   name   | address  | salary | deptno 
+-------+----------+----------+--------+-------- 
+1	| priti    | Dehu     |  50000 |      2 
+2	| priyanka | chikhali |  30000 |      2 
+3	| vidya    | Akurdi   |  35000 |      1 
+4	| sakshi   | moshi    |  40000 |      3 
+5	| mrunal   | khed     |  45000 |      4 
+6	| mrunal   | khed     |  45000 |      1 
+7	| mohini   | bhosari  |  55000 |      6 
+8	| rahul    | bhosari  |  50000 |      7 
+9	| Ram      | pune     |  60000 |      1 
+10	| nikita   | hadpasar |  30000 |      5 
+(10 rows) 
+ 
+ 
+postgres=# select *from Emp1 order by deptno;  empno |   name   | address  | salary | deptno 
+-------+----------+----------+--------+--------      9 | Ram      | pune     |  60000 |      1 
+     6 | mrunal   | khed     |  45000 |      1 
+3	| vidya    | Akurdi   |  35000 |      1 
+1	| priti    | Dehu     |  50000 |      2 
+2	| priyanka | chikhali |  30000 |      2 
+4	| sakshi   | moshi    |  40000 |      3 
+5	| mrunal   | khed     |  45000 |      4 
+    10 | nikita   | hadpasar |  30000 |      5 
+7	| mohini   | bhosari  |  55000 |      6 
+8	| rahul    | bhosari  |  50000 |      7 
+(10 rows) 
+ 
+ 
+postgres=# create table Department(did int primary key,dname varchar(30),deptno int references Emp1); CREATE TABLE postgres=# \d Department; 
+                    Table "public.department" 
+ Column |         Type          | Collation | Nullable | Default --------+-----------------------+-----------+----------+---------  did    | integer               |           | not null |  dname  | character varying(30) |           |          |  deptno | integer               |           |          | 
+Indexes: 
+    "department_pkey" PRIMARY KEY, btree (did) 
+Foreign-key constraints: 
+    "department_deptno_fkey" FOREIGN KEY (deptno) REFERENCES emp1(empno) 
+ 
+ 
+postgres=# insert into Department values(1,'finance',2); INSERT 0 1 postgres=# insert into Department values(2,'finance',1); INSERT 0 1 postgres=# insert into Department values(3,'tax',3); INSERT 0 1 postgres=# insert into Department values(4,'loan',4); 
+INSERT 0 1 
+postgres=# insert into Department values(5,'tax',5); INSERT 0 1 postgres=# select *from Department;  did |  dname  | deptno 
+-----+---------+-------- 
+1	| finance |      2 
+2	| finance |      1 
+3	| tax     |      3 
+4	| loan    |      4 
+5	| tax     |      5 
+6	| tax     |      6 
+7	| tax     |      5 
+8	| tax     |      4 
+9	| loan    |      7 
+(9 rows) 
+ 
+ 
+postgres=# update Department set dname='xyz' where did=1; UPDATE 1 postgres=# select *from Department;  did |  dname  | deptno 
+-----+---------+-------- 
+2	| finance |      1 
+3	| tax     |      3 
+4	| loan    |      4 
+5	| tax     |      5 
+6	| tax     |      6 
+7	| tax     |      5 
+8	| tax     |      4 
+9	| loan    |      7 
+   1 | xyz     |      2 
+(9 rows) 
+ 
+postgres=# select deptno as Department,sum(salary) as total_emp from Emp1 group by deptno having count(empno)>40000 order by deptno;  department | total_emp 
+------------+----------- 
+(0	rows) 
+ 
+ 
+postgres=# select avg(salary) from Emp1; 
+        avg 
+-------------------- 
+ 44000.000000000000 
+(1	row) 
+ 
+ 
+postgres=# select max(salary),deptno from Emp1 group by deptno having max(salary)>30000;   max  | deptno 
+-------+--------  40000 |      3 
+ 45000 |      4 
+ 55000 |      6 
+ 50000 |      2 
+ 50000 |      7 
+ 60000 |      1 
+(6 rows) 
+
+postgres=# select deptno, MIN(salary) from employee GROUP BY deptno ORDER BY deptno;  deptno |   min --------+----------      10 | 45000.00 
+     20 | 60000.00 
+     30 | 45000.00 
+     40 | 50000.00 
+     50 | 65000.00 
+(4	rows) 
+
+postgres =# UPDATE employee SET salary = salary + 0.5 * salary where deptno =(select deptno f 
+rom department where dname = 'Finance'); UPDATE 4 mydb=# select * from employee where deptno=(select deptno from department where dname = 
+'Finance');  empno |     name      | address |  salary   | deptno -------+---------------+---------+-----------+-------- 
+   101 | John Doe      | Pune    |  75000.00 |     10 
+   103 | Robert Brown  | Pune    |  82500.00 |     10 
+   105 | Michael Clark | Pune    | 105000.00 |     10 
+   108 | Chris Wilson  | Pune    |  67500.00 |     10 
+(4 rows) 
+ 
+postgres =# UPDATE employee SET deptno = (select deptno from department where dname = 'Finance') where deptno = (select deptno from department where dname = 'Human Resource'); 
+UPDATE 0 
+ 
+postgres =# insert into emp_backups(empno, ename) select empno, name from employee; INSERT 0 10 
+postgres =# select * from emp_backups;  empno |     ename -------+---------------- 
+   102 | aditya
+   104 | atharv
+106	| yash
+107	|rajat 
+109	| aniket
+110	| Saurabh 
+   101 | anuj
+   103 | pratik
+   105 | akash
+108	| chintu
+ (10 rows) 
+
+postgres =# delete from employee where deptno = (select deptno from department where dname='Marketing'); DELETE 1 mydb=# select * from employee; 
+ empno |      name      |  address  |  salary   | deptno -------+----------------+-----------+-----------+--------    102 | aditya   | sangli   |  60000.00 |     20 
+   104 | atharv   | koregon    |  45000.00 |     30 
+   106 | yash | patan |  80000.00 |     20 
+109	| rajat   | karad |  65000.00 |     50 
+110	| aniket | Chennai   |  75000.00 |     30 
+   101 | surabha       | solapur |  75000.00 |     10 
+   103 | anuj   | Pune      |  82500.00 |     10 
+   105 | pratik | satara     | 105000.00 |     10 
+   108 | akash  | Pune      |  67500.00 |     10 
+(9 rows) 
+ 
+SET B 
+
+postgres=# create table department1(dno int primary key, dname varchar(30)); CREATE TABLE mydb=# insert into department1 (dno, dname) VALUES (1, 'Mathematics'), (2, 'Physics'), 
+(3, 'Computer Science'), 
+(4, 'Chemistry'), 
+(5, 'Biology'); INSERT 0 5 postgres=# create table non_teaching (empno int primary key,name varchar(20),address varchar(50),salary int,dno int references department1(dno)); CREATE TABLE postgres=# select * from non_teaching; 
+ empno |      name      |      address      | salary | dno -------+----------------+-------------------+--------+-----    201 | Amit | Kothrud, Pune     |  55000 |   1 
+202	| pratik  | Andheri, Mumbai   |  58000 |   2 
+203	| Aniket  | Kharadi, Pune     |  60000 |   3 
+204	| Praful   | Thane West, Thane |  62000 |   4 
+205	| Sanket | Dombivli, Mumbai  |  64000 |   5 
+206	| Rohan     | Wakad, Pune       |  65000 |   1 
+207	| Radha    | Borivali, Mumbai  |  66000 |   2 
+208	| Manish    | Aundh, Pune       |  67000 |   3 
+209	| Vasudev   | Dadar, Mumbai     |  68000 |   4 
+(10 rows) 
+
+
+postgres=# create table teaching (empno int primary key,name varchar(20),address varchar(50),salary int,dno int references department1(dno)); 
+CREATE TABLE 
+ 
+postgres=# select * from teaching; 
+ empno |      name      |      address      | salary | dno -------+----------------+-------------------+--------+-----    201 | Amit | Kothrud, Pune     |  55000 |   1 
+210	| pratik  | Andheri, Mumbai   |  58000 |   2 
+211	| Aniket  | Kharadi, Pune     |  60000 |   3 
+212	| Praful   | Thane West, Thane |  62000 |   4 
+213	| Sanket | Dombivli, Mumbai  |  64000 |   5 
+214	| Rohan     | Wakad, Pune       |  65000 |   1 
+215	| Radha    | Borivali, Mumbai  |  66000 |   2 
+216	| Manish    | Aundh, Pune       |  67000 |   3 
+217	| Vasudev   | Dadar, Mumbai     |  68000 |   4 
+(10 rows) 
+ 
+ postgres=# select empno from non_teaching union select empno from teaching;  empno 
+------- 
+   201 
+   107 
+   110 
+   101 
+   108 
+   209 
+   205 
+   206 
+   103 
+   210 
+(10 rows) 
+ 
+postgres=# select name from non_teaching intersect select name from teaching;     name 
+------------- 
+ Rajesh 
+ Ankit  
+ Sita 
+(3 rows) 
+ 
+postgres=# Select name from non_teaching except select name from teaching;       name ---------------- 
+ Manish Shinde 
+ Sanket Patil 
+ Aniket Rane 
+ Rajat Thakur 
+ Rohit More 
+(5 rows) 
+ 
+
+
+ 
+ 

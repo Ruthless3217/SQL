@@ -1,0 +1,198 @@
+
+SET A
+
+
+1.Create table emp (eno integer primary key, enamevarchar[50] , salary float);
+
+create table emp( eno integer primary key,ename varchar(30),salary float);
+CREATE TABLE
+postgres=# \d emp;
+                       Table "public.emp"
+ Column |         Type          | Collation | Nullable | Default
+--------+-----------------------+-----------+----------+---------
+ eno    | integer               |           | not null |
+ ename  | character varying(30) |           |          |
+ salary | double precision      |           |          |
+Indexes:
+    "emp_pkey" PRIMARY KEY, btree (eno)
+
+2.Create table books( id integer UNIQUE, title text NOT NULL, author_idinteger,sub_idinteger,CONSTRAINTbooks_id_pkey PRIMARY KEY(id));
+
+postgres=# create table books( b_id integer unique ,b_title varchar(20) not null);
+CREATE TABLE
+postgres=# \d books;
+                       Table "public.books"
+ Column  |         Type          | Collation | Nullable | Default
+---------+-----------------------+-----------+----------+---------
+ b_id    | integer               |           |          |
+ b_title | character varying(20) |           | not null |
+Indexes:
+    "books_b_id_key" UNIQUE CONSTRAINT, btree (b_id)
+
+3.Create table sales_order(order_no char[10] PRIMARY KEY, order_date date, salesman_no integer);
+
+postgres=# create table sales_order(order_no char(20) primary key, order_date date,salesman_no integer);
+CREATE TABLE
+postgres=# \d sales_order;
+                  Table "public.sales_order"
+   Column    |     Type      | Collation | Nullable | Default
+-------------+---------------+-----------+----------+---------
+ order_no    | character(20) |           | not null |
+ order_date  | date          |           |          |
+ salesman_no | integer       |           |          |
+Indexes:
+    "sales_order_pkey" PRIMARY KEY, btree (order_no)
+
+4.Create table client_master (client_no integer CONSTRAINT p_client PRIMARY KEY, name varchar[50], addr text, bal_due integer);
+
+postgres=# create table client_master(client_no integer constraint p_client  primary key,name varchar(50),addr varchar(20),bal_due integer);
+CREATE TABLE
+postgres=# \d client_master;
+                    Table "public.client_master"
+  Column   |         Type          | Collation | Nullable | Default
+-----------+-----------------------+-----------+----------+---------
+ client_no | integer               |           | not null |
+ name      | character varying(50) |           |          |
+ addr      | character varying(20) |           |          |
+ bal_due   | integer               |           |          |
+Indexes:
+    "p_client" PRIMARY KEY, btree (client_no)
+
+5.Create table inventory(inv_no integer PRIMARY KEY, in_stock Boolean);
+
+postgres=# create table inventory(inv_no integer primary key,in_stock boolean);
+CREATE TABLE
+postgres=# \d inventory;
+              Table "public.inventory"
+  Column  |  Type   | Collation | Nullable | Default
+----------+---------+-----------+----------+---------
+ inv_no   | integer |           | not null |
+ in_stock | boolean |           |          |
+Indexes:
+    "inventory_pkey" PRIMARY KEY, btree (inv_no)
+
+6.create table sales_order1(order_no char[10], product_no char[10],qty_orderedinteger,product_rate numeric(8,2),PRIMARY KEY(order_no,product_no));
+
+
+postgres=# create  table sales_order(order_no char[10],product_no char[10],qty_ordered integer,product_rate numeric(8,2),primary key(order_no,product_no));
+ERROR:  relation "sales_order" already exists
+postgres=# create  table Sales_order(order_no char[10],product_no char[10],qty_ordered integer,product_rate numeric(8,2),primary key(order_no,product_no));
+ERROR:  relation "sales_order" already exists
+postgres=# create  table Sales_order1(order_no char[10],product_no char[10],qty_ordered integer,product_rate numeric(8,2),primary key(order_no,product_no));
+CREATE TABLE
+postgres=# \d sales_order;
+                  Table "public.sales_order"
+   Column    |     Type      | Collation | Nullable | Default
+-------------+---------------+-----------+----------+---------
+ order_no    | character(20) |           | not null |
+ order_date  | date          |           |          |
+ salesman_no | integer       |           |          |
+Indexes:
+    "sales_order_pkey" PRIMARY KEY, btree (order_no)
+
+SET A
+Que 1.
+postgres=# create table player(player_id integer primary key,name varchar(50),birth_date date,birth_place varchar(100));
+CREATE TABLE
+postgres=# \d player;
+                         Table "public.player"
+   Column    |          Type          | Collation | Nullable | Default
+-------------+------------------------+-----------+----------+---------
+ player_id   | integer                |           | not null |
+ name        | character varying(50)  |           |          |
+ birth_date  | date                   |           |          |
+ birth_place | character varying(100) |           |          |
+Indexes:
+    "player_pkey" PRIMARY KEY, btree (player_id)
+
+
+Que 2.
+postgres=#
+create table Student(Roll_no integer constraint Class primary key,weight numeric(6,2),Height numeric(6,2));
+CREATE TABLE
+postgres=# \d Student;
+                 Table "public.student"
+ Column  |     Type     | Collation | Nullable | Default
+---------+--------------+-----------+----------+---------
+ roll_no | integer      |           | not null |
+ weight  | numeric(6,2) |           |          |
+ height  | numeric(6,2) |           |          |
+Indexes:
+    "class" PRIMARY KEY, btree (roll_no)
+Que 3.
+postgres=# create table project(project_id integer primary key,project_name varchar(20),project_description text,status boolean);
+CREATE TABLE
+postgres=# \d project;
+                            Table "public.project"
+       Column        |         Type          | Collation | Nullable | Default
+---------------------+-----------------------+-----------+----------+---------
+ project_id          | integer               |           | not null |
+ project_name        | character varying(20) |           |          |
+ project_description | text                  |           |          |
+ status              | boolean               |           |          |
+Indexes:
+    "project_pkey" PRIMARY KEY, btree (project_id)
+
+
+
+SET B
+
+Q1:
+postgres=# create table machine(m_id int primary key,
+postgres(# m_name varchar(10) not null,
+postgres(# m_type varchar(20) check (m_type in('Drilling','Milling','Lathe','Turning','grinding')),
+postgres(# m_cost float not null,
+postgres(# m_price float check (m_price > 0),
+postgres(# check (m_cost < m_price));
+CREATE TABLE
+postgres=# insert into machine values(1,'abc','Milling',5000,7000);
+INSERT 0 1
+postgres=# insert into machine values(1,'pqr','Drilling',3000,6000);
+ERROR:  duplicate key value violates unique constraint "machine_pkey"
+DETAIL:  Key (m_id)=(1) already exists.
+postgres=# insert into machine values(2,'pqr','Drilling',3000,6000);
+INSERT 0 1
+postgres=# insert into machine values(3,'pqr','Lathe',2000,6000);
+INSERT 0 1
+postgres=# insert into machine values(4,'xyz','Turning',4000,5000);
+INSERT 0 1
+postgres=# insert into machine values(5,'mno','grinding',8000,10000);
+INSERT 0 1
+postgres=# select *from machine;
+ m_id | m_name |  m_type  | m_cost | m_price
+------+--------+----------+--------+---------
+    1 | abc    | Milling  |   5000 |    7000
+    2 | pqr    | Drilling |   3000 |    6000
+    3 | pqr    | Lathe    |   2000 |    6000
+    4 | xyz    | Turning  |   4000 |    5000
+    5 | mno    | grinding |   8000 |   10000
+(5 rows)
+
+
+Q2:
+postgres=# create table Employee1(Emp_id int primary key,Emp_name varchar(50) not null check(Emp_name=upper(Emp_name)),Employee_Desig varchar(10) check(Employee_Desig in('manager','staff','worker')),Emp_salary float check(Emp_salary>0),Emp_uid int unique);
+CREATE TABLE
+postgres=# \d  Employee1;
+                        Table "public.employee1"
+     Column     |         Type          | Collation | Nullable | Default
+----------------+-----------------------+-----------+----------+---------
+ emp_id         | integer               |           | not null |
+ emp_name       | character varying(50) |           | not null |
+ employee_desig | character varying(10) |           |          |
+ emp_salary     | double precision      |           |          |
+ emp_uid        | integer               |           |          |
+Indexes:
+    "employee1_pkey" PRIMARY KEY, btree (emp_id)
+    "employee1_emp_uid_key" UNIQUE CONSTRAINT, btree (emp_uid)
+Check constraints:
+    "employee1_emp_name_check" CHECK (emp_name::text = upper(emp_name::text))
+    "employee1_emp_salary_check" CHECK (emp_salary > 0::double precision)
+    "employee1_employee_desig_check" CHECK (employee_desig::text = ANY (ARRAY['manager'::character varying, 'staff'::character varying, 'worker'::character varying]::text[]))
+
+
+
+
+
+
+
+

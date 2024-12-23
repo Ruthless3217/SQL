@@ -1,0 +1,623 @@
+SET A 
+
+Que1: 
+postgres=# CREATE TABLE Students (s_no INT PRIMARY KEY,s_name VARCHAR(20),s_class VARCHAR(10) NOT NULL,s_addr VARCHAR(30)); 
+CREATE TABLE 
+ 
+postgres=# \d students; 
+                     Table "public.students" 
+ Column  |         Type          | Collation | Nullable | Default ---------+-----------------------+-----------+----------+---------  s_no    | integer               |           | not null |  s_name  | character varying(20) |           |          |  s_class | character varying(10) |           | not null |  s_addr  | character varying(30) |           |          | Indexes: 
+    "students_pkey" PRIMARY KEY, btree (s_no) 
+ 
+postgres=# insert into students values(1,'pratik','Fy','delhi'); INSERT 0 1 postgres=# insert into students values(2,'akash','Fy','pune'); INSERT 0 1 postgres=# insert into students values(3,'rajat','Sy','nasik'); INSERT 0 1 postgres=# insert into students values(4,'aniket','Ty','mumbai'); INSERT 0 1 postgres=# insert into students values(5,'Ramesh','Ty','pune'); INSERT 0 1 postgres=# select *from students;  s_no | s_name  | s_class | s_addr 
+------+---------+---------+--------     1 | Pratik  | Fy      | delhi    
+ 2 | akash   | Fy      | pune 
+3	| rajat   | Sy      | nasik 
+4	|aniket | Ty      | mumbai 
+5	| Ramesh     | Ty      | pune 
+(5 rows) 
+ 
+ 
+ 
+postgres=# CREATE TABLE Teacher (t_no INT PRIMARY KEY,t_name VARCHAR(20),qualification VARCHAR(15),experience INT); 
+CREATE TABLE 
+ 
+postgres=# \d teacher; 
+                         Table "public.teacher" 
+    Column     |         Type          | Collation | Nullable | Default ---------------+-----------------------+-----------+----------+---------  t_no          | integer               |           | not null |  t_name        | character varying(20) |           |          |  qualification | character varying(15) |           |          |  experience    | integer               |           |          | 
+Indexes: 
+    "teacher_pkey" PRIMARY KEY, btree (t_no) 
+ 
+postgres=# insert into teacher values(5,'rahul','Msc_cs',10); INSERT 0 1 postgres=# update teacher set t_no=1 where t_name='gaurav'; UPDATE 1 postgres=# insert into teacher values(2,'atharv','Msc_CA',15); INSERT 0 1 postgres=# insert into teacher values(3,'manoj','phd_Cs',8); 
+INSERT 0 1 
+postgres=# insert into teacher values(4,'rajat','MCA',12); INSERT 0 1 postgres=# insert into teacher values(5,'rahul','MSC',10); INSERT 0 1 postgres=# select *from teacher;  t_no | t_name | qualification | experience 
+------+--------+---------------+------------ 
+1	|gaurav | Msc_cs        |         10 
+2	| atharv   | Msc_CA        |         15 
+3	| manoj   | phd_Cs        |          8 
+4	| rajat    | MCA           |         12 
+5	| rahul    | MSC           |         10 
+(5 rows) 
+ 
+ 
+ 
+postgres=# CREATE TABLE Teaches (s_no INT,t_no INT,subject VARCHAR(20),PRIMARY KEY (s_no, t_no),FOREIGN KEY (s_no) REFERENCES Students(s_no),FOREIGN KEY (t_no) REFERENCES Teacher(t_no)); 
+CREATE TABLE postgres=# \d teaches; 
+                      Table "public.teaches" 
+ Column  |         Type          | Collation | Nullable | Default ---------+-----------------------+-----------+----------+---------  s_no    | integer               |           | not null |  t_no    | integer               |           | not null |  subject | character varying(20) |           |          | 
+Indexes: 
+    "teaches_pkey" PRIMARY KEY, btree (s_no, t_no) 
+Foreign-key constraints: 
+    "teaches_s_no_fkey" FOREIGN KEY (s_no) REFERENCES students(s_no) 
+    "teaches_t_no_fkey" FOREIGN KEY (t_no) REFERENCES teacher(t_no) 
+ 
+postgres=# insert into teaches values(1,2,'Java'); INSERT 0 1 postgres=# insert into teaches values(2,3,'Cpp'); INSERT 0 1 postgres=# insert into teaches values(1,2,'OS'); 
+postgres=# insert into teaches values(1,4,'OS'); INSERT 0 1 postgres=# insert into teaches values(3,5,'python'); INSERT 0 1 postgres=# insert into teaches values(5,1,'DBMS'); INSERT 0 1 postgres=# select *from teaches;  
+s_no | t_no | subject 
+------+------+--------- 
+1	|    2 | Java 
+2	|    3 | Cpp 
+3 |    4 | OS 
+ 4 |    5 | python 
+ 5 |    1 | DBMS 
+(5 rows) 
+ 
+postgres=# select t.t_name from teacher t join  teaches st on t.t_no=st.t_no  join students s on s.s_no=st.s_no where s.s_name='Avinash';
+  t_name 
+-----------
+atharv
+ rajat
+(2 rows) 
+ 
+ 
+postgres=# select t.t_name from teacher t join  teaches st on t.t_no=st.t_no  join students s on s.s_no=st.s_no where t.t_name='Avinash';  t_name 
+-------- (0 rows) 
+ 
+ 
+postgres=# select s.s_name from teacher t join  teaches st on t.t_no=st.t_no  join students s on s.s_no=st.s_no where t.t_name='gaurav';  s_name 
+-------- 
+ gaurav
+(1 row) 
+ 
+postgres=# select *from teacher where t_name like '%t';  t_no | t_name | qualification | experience 
+------+--------+---------------+------------ 
+    4 | rajat  | MCA           |         12 
+(1 row) 
+ 
+ 
+postgres=# select t.t_name from teacher t join teaches st on t.t_no=st.t_no where st.subject='DBMS';  t_name 
+--------  
+gaurav
+(1 row) 
+ 
+ 
+postgres=# select t.t_no from teacher t where t.qualification='’ph.D; 
+t_no | t_name | qualification | experience
+ ------+---------+---------------+------------
+101	 gaurav | Ph.D | 15------ 
+(1rows) 
+ 
+ 
+postgres=# select * from student where s_addr='Cidco'; 
+ s_no | s_name | s_class | s_addr
+ ------+---------+---------+-------- 
+13	 Avinash | FYBCA | Cidco
+(1 row)  
+         
+ postgres=# select max(experience) from teacher; 
+max
+-----
+15
+( 1 row)
+
+postgres=# select s_name from student where s_class='SYBCA' and s_addr='Kothrud';
+ s_name
+ -------- 
+Snehal 
+(1 row)
+
+postgres=# select s_name from student where s_name like '______';
+ s_name
+ -------- 
+Snehal Prasad
+ (2 rows)
+
+postgres=# select t_name,subject, count(s_no) from teacher,s_t where teacher.t_no=s_t.t_no group by subject,t_name;
+ t_name | subject | count
+ ----------+--------------------------+-------
+ Madhuri | Computer Networks | 1 
+Rahul | C programming | 1
+ Sangeeta | DBMS | 1
+ Aparna | Fundamentals of Computer | 1 
+Tanishka | Operating System   |1
+(5 rows)
+
+
+
+
+
+2
+create table area (aname varchar(20) primary key, area_type varchar(5) check (area_type in ('urban', 'rural')));
+ insert into area (aname, area_type) values 
+('Pune', 'urban'), ('Mumbai', 'urban'), ('Nagpur', 'urban'), ('Satara', 'rural'), ('Kolhapur', 'rural') , ('Aurangabad', 'urban');
+ INSERT 0 6 
+postgres=# select * from area;
+ aname | area_type
+ ------------+----------- 
+Pune | urban
+ Mumbai | urban
+ Nagpur | urban
+ Satara | rural 
+Kolhapur | rural
+ Aurangabad | urban
+ (6 rows)
+
+ create table person (pno int primary key, pname varchar(20), birthdate date, income money, aname varchar(20), foreign key (aname) references area(aname) on delete cascade on update cascade); 
+insert into person (pno, pname, birthdate, income, aname) values (1, Amit Deshmukh ', '1990-03-15', 55000, 'Pune'), (2, 'Neha Patil', '1985-07-22', 72000, 'Mumbai'), (3, 'Rajesh Jadhav', '1993-05-10', 45000, 'Nagpur'), (4, 'Smita Kulkarni', '1991-01-12', 67000, 'Satara'), (5, 'Pranav Shinde', '1988-11-25', 82000, 'Kolhapur'), (6, 'Anita Rao', '1992-04- 25', 55000, 'Aurangabad'), (7, 'Vikram Joshi', '1989-12-10', 55000, 'Aurangabad'); 
+INSERT 0 7 
+postgres=# select * from person; 
+pno | pname | birthdate | income | aname
+ -----+----------------+------------+------------+------------ 
+1 | Amit Deshmukh | 1990-03-15 | $55,000.00 | Pune 
+2| Neha Patil | 1985-07-22 | $72,000.00 | Mumbai 
+3 | Rajesh Jadhav | 1993-05-10 | $45,000.00 | Nagpur 
+4 | Smita Kulkarni | 1991-01-12 | $67,000.00 | Satara
+5| Pranav Shinde | 1988-11-25 | $82,000.00 | Kolhapur
+6| Anita Rao | 1992-04-25 | $55,000.00 | Aurangabad
+7| Vikram Joshi | 1989-12-10 | $55,000.00 | Aurangabad
+ (7 rows)
+
+postgres=# select pname from person where aname = 'Pune';
+pname
+ ---------------
+ Amit Deshmukh 
+(1 row)
+
+ postgres=# select * from person where pname like 'S%'; 
+pno | pname | birthdate | income | aname
+ -----+----------------+------------+------------+--------
+| Smita Kulkarni | 1991-01-12 | $67,000.00 | Satara
+ (1 row) 
+
+Postgres=#  select aname, count(*) from person where income > '65000' group by aname;
+ aname | count
+ ----------+-------
+ Satara | 1 
+Mumbai | 1 
+Kolhapur | 1
+ (3 rows) 
+
+postgres=# select pname from person where income between '60000' and '100000'; 
+pname 
+---------------- 
+Neha Patil
+ Smita Kulkarni 
+Pranav Shinde
+ (3 rows) 
+
+postgres=# select pname from person where extract(month from birthdate) = 5; 
+pname 
+--------------- 
+Rajesh Jadhav 
+(1 row)
+
+postgres=# select pname from person where income in (select income from person group by income having count(*) > 1);
+ pname
+ ---------------
+ Anita Rao 
+Vikram Joshi
+ Amit Deshmukh
+ (3 rows) 
+
+    postgres=# select aname, max(income) from person group by aname; 
+aname | max
+ ------------+------------
+ Satara | $67,000.00
+ Mumbai | $72,000.00
+ Pune | $55,000.00 
+Nagpur | $45,000.00 
+Kolhapur | $82,000.00 
+Aurangabad | $55,000.00
+ (6 rows) 
+
+ postgres=# update person set income = income * 1.10 where aname in (select aname from area where area_type = 'rural');
+ UPDATE 2
+
+ mydb=# delete from person where income < '50000';
+ DELETE 1
+
+  Postgres=# select * from person order by pname desc;
+ pno | pname | birthdate | income | aname
+ -----+----------------+------------+------------+------------
+7| Vikram Joshi | 1989-12-10 | $55,000.00 | Aurangabad 
+4 | Smita Kulkarni | 1991-01-12 | $73,700.00 | Satara
+ 5 | Pranav Shinde | 1988-11-25 | $90,200.00 | Kolhapur 
+2 | Neha Patil | 1985-07-22 | $72,000.00 | Mumbai 
+6 | Anita Rao | 1992-04-25 | $55,000.00 | Aurangabad
+ 1 | Amit Deshmukh | 1990-03-15 | $55,000.00 | Pune 
+(6 rows)
+
+ 3
+postgres=# create table book (b_no int primary key, b_name varchar(50), pub_name varchar(50) not null, b_price float);
+ CREATE TABLE 
+postgres=# create table author (a_no int primary key, a_name varchar(30), qualification varchar(25), address varchar(30));
+ CREATE TABLE 
+
+postgres=# create table book_author (b_no int, a_no int, primary key (b_no, a_no), foreign key (b_no) references book(b_no), foreign key (a_no) references author(a_no));
+ CREATE TABLE 
+postgres=# select * from book; 
+b_no | b_name | pub_name | b_price
+ ------+----------+----------------------+--------- 
+1 | SHAAN | HINDI_PUB | 250 
+2| GADADAR | MARATHI_PUB | 300
+3 | SAFAR | NIRALI_PUBLICATION | 450 
+   4| SURYAM | JAGRUTI_PUBLICATIONS | 550
+5| SANGAM | NIRALI_PUBLICATION | 600 
+6 | NEW_BOOK | NIYATI_PUBLICATIONS | 400
+ (6 rows)
+
+postgres=# select * from author;
+ a_no | a_name | qualification | address
+ ------+-------------+---------------+--------- 
+ 1 | RAJ KUMAR | MA | DELHI
+  2 | SUNIL RANE | M.A. | MUMBAI
+  3 | ANITA MEHTA | M.A. | NASHIK 
+ 4 | RAVI SHARMA | M.A. | NASHIK
+ 5 | PRIYA SINGH | BA | PUNE
+ (5 rows)
+
+
+postgres=# select * from book_author;
+ b_no | a_no
+ ------+------ 
+    1| 1
+ 2| 2
+ 3 | 3
+ 4 | 4
+ 5 | 3
+ 3 | 5
+(6 rows)
+
+postgres=# select b.* from book b join book_author ba on b.b_no = ba.b_no join author a on ba.a_no = a.a_no where a.a_name = 'RAJ KUMAR';
+ b_no | b_name | pub_name | b_price
+ ------+--------+-----------+--------- 
+1 | SHAAN | HINDI_PUB | 250
+ (1 row)
+
+postgres=# select count(*) from book where pub_name = 'NIRALI_PUBLICATION'; 
+Count
+ -------
+ 2 
+(1 row)
+
+postgres=# select * from book where b_price between 400.00 and 600.00;
+ b_no | b_name | pub_name | b_price
+ ------+--------+----------------------+---------
+3| SAFAR | NIRALI_PUBLICATION | 450 
+4 | SURYAM | JAGRUTI_PUBLICATIONS | 550
+ 5 | SANGAM | NIRALI_PUBLICATION | 600
+ (3 rows)
+
+ppostgres=# select * from author order by a_name asc;
+ a_no | a_name | qualification | address
+ ------+-------------+---------------+--------- 
+3 | ANITA MEHTA | M.A. | NASHIK
+ 5 | PRIYA SINGH | BA | PUNE
+ 1 | RAJ KUMAR | MA | DELHI
+ 4 | RAVI SHARMA | M.A. | NASHIK
+ 2 | SUNIL RANE | M.A. | MUMBAI
+ (5 rows)
+
+postgres=# update book set pub_name = 'JAGRUTI_PUBLICATIONS' where pub_name = 'NIYATI_PUBLICATIONS'; 
+
+UPDATE 1
+
+postgres=# select * from book; 
+b_no | b_name | pub_name | b_price 
+------+----------+----------------------+---------
+1	| SHAAN | HINDI_PUB | 250
+2| GADADAR | MARATHI_PUB | 300 
+3 | SAFAR | NIRALI_PUBLICATION | 450
+ 4 | SURYAM | JAGRUTI_PUBLICATIONS | 550 
+5 | SANGAM | NIRALI_PUBLICATION | 600
+ 6 | NEW_BOOK | JAGRUTI_PUBLICATIONS | 400
+ (6 rows)
+
+postgres=# select * from book where b_name like 'S%'; 
+b_no | b_name | pub_name | b_price
+ ------+--------+----------------------+--------- 
+1 | SHAAN | HINDI_PUB | 250
+ 3 | SAFAR | NIRALI_PUBLICATION | 450 
+4 | SURYAM | JAGRUTI_PUBLICATIONS | 550
+ 5 | SANGAM | NIRALI_PUBLICATION | 600
+ (4 rows)
+
+postgres=# select a.a_name, b.b_name from author a join book_author ba on a.a_no = ba.a_no join book b on ba.b_no = b.b_no order by a.a_name;
+ a_name | b_name
+ -------------+--------- 
+ANITA MEHTA | SAFAR
+ ANITA MEHTA | SANGAM
+ PRIYA SINGH | SAFAR 
+RAJ KUMAR | SHAAN 
+RAVI SHARMA | SURYAM
+ SUNIL RANE | GADADAR
+ (6 rows)
+
+postgres=# select a.a_name, count(ba.b_no) as book_count from author a join book_author ba on a.a_no = ba.a_no group by a.a_name having count(ba.b_no) >= 2;
+ a_name | book_count
+ -------------+------------ 
+ANITA MEHTA | 2
+ (1 row)
+
+
+ postgres=# select b.* from book b join book_author ba on b.b_no = ba.b_no join author a on ba.a_no = a.a_no where a.address = 'NASHIK'; 
+b_no | b_name | pub_name | b_price
+ ------+--------+----------------------+---------
+3| SAFAR | NIRALI_PUBLICATION | 450
+ 4 | SURYAM | JAGRUTI_PUBLICATIONS | 550
+ 5 | SANGAM | NIRALI_PUBLICATION | 600
+(3 rows)
+
+postgres=# select a.a_name from author a join book_author ba on a.a_no = ba.a_no group by a.a_name having count(ba.b_no) = (select max(book_count) from (select count(b_no) as book_count from book_author group by a_no) as subquery);
+ a_name
+ -------------
+ ANITA MEHTA
+
+ (1 row)
+
+SET B
+1
+postgres=# create table movie (m_name varchar(25) primary key, release_year integer, budget money);
+ CREATE TABLE
+postgres=# create table actor (a_name varchar(20) primary key, role char(20) not null, charges money, a_address varchar(20));
+ CREATE TABLE
+postgres=# create table producer (producer_id integer primary key, p_name char(30) not null, p_address varchar(20));
+ CREATE TABLE 
+Postgres=# create table movie_actor (m_name varchar(25), a_name varchar(20), primary key (m_name, a_name), foreign key (m_name) references movie(m_name), foreign key (a_name) references actor(a_name));
+ CREATE TABLE
+postgres=# create table movie_producer (m_name varchar(25), producer_id integer, primary key (m_name, producer_id), foreign key (m_name) references movie(m_name), foreign key (producer_id) references producer(producer_id)); 
+CREATE TABLE
+postgres =# select * from movie;
+ m_name | release_year | budget
+ --------------------------+--------------+-----------------
+ Sholey | 1975 | $6,000,000.00
+ Dil Chahta Hai | 2001 | $30,000,000.00
+ Zindagi Na Milegi Dobara | 2011 | $60,000,000.00
+ War | 2019 | $200,000,000.00
+ (4 rows) 
+
+postgres=# select * from actor;
+ a_name | role | charges | a_address
+ ------------------+----------------------+----------------+-----------
+ Amitabh Bachchan | Lead Actor | $10,000,000.00 | Mumbai
+ Aamir Khan | Lead Actor | $12,000,000.00 | Mumbai 
+Farhan Akhtar | Supporting Actor | $8,000,000.00 | Mumbai
+ Hrithik Roshan | Lead Actor | $15,000,000.00 | Mumbai
+ (4 rows)
+
+postgres=# select * from producer;
+ producer_id | p_name | p_address
+ -------------+--------------------------------+-----------
+1| Mr. Subhash Ghai | Mumbai 
+2| Excel Entertainment | Mumbai 
+3 | Zee Studios | Mumbai
+ 4 | Yash Raj Films | Mumbai
+ (4 rows)
+
+postgres=# select * from movie_actor;
+ m_name | a_name 
+--------------------------+------------------
+ Sholey | Amitabh Bachchan 
+Dil Chahta Hai | Aamir Kha
+Zindagi Na Milegi Dobara | Farhan Akhtar
+ War | Hrithik Roshan 
+Zindagi Na Milegi Dobara | Aamir Khan 
+Dil Chahta Hai | Farhan Akhtar
+ (6 rows)
+
+postgres=# select * from movie_producer;
+ m_name | producer_id 
+ --------------------------+------------- 
+Sholey | 1
+ Sholey | 2
+ Dil Chahta Hai | 2
+ Dil Chahta Hai | 3
+Zindagi Na Milegi Dobara | 2
+ Zindagi Na Milegi Dobar  |3
+(6 rows)
+
+Postgres=# select a_name, m_name from movie_actor;
+ a_name | m_name
+ ------------------+--------------------------
+ Amitabh Bachchan | Sholey 
+Aamir Khan | Dil Chahta Hai
+ Farhan Akhtar | Zindagi Na Milegi Dobara 
+Hrithik Roshan | War
+ Aamir Khan | Zindagi Na Milegi Dobara
+ Farhan Akhtar | Dil Chahta Hai
+ (6 rows)
+
+postgres=# select m_name from movie_producer where producer_id = (select producer_id from producer where p_name = 'Mr. Subhash Ghai');
+ m_name
+ -------- 
+Sholey
+ (1 row)
+
+postgres=# select * from movie where budget = (select min(budget) from movie);
+ m_name | release_year | budget
+ --------+--------------+--------------- 
+Sholey | 1975 | $6,000,000.00
+ (1 row)
+
+postgres=# select m_name from movie where release_year > 2015;
+ m_name 
+-------- 
+War
+ (1 row)
+
+postgres=# select count(*), sum(budget) from movie where release_year = 2011; 
+
+count | sum
+ -------+----------------
+ 1 | $60,000,000.00
+ (1 row) 
+
+postgres=# select a_name from movie_actor group by a_name having count(m_name) = (select min(movie_count) from (select count(m_name) as movie_count from movie_actor group by a_name) subquery);
+ a_name
+ ------------------
+ Amitabh Bachchan
+ Hrithik Roshan
+ (2 rows)
+postgres=# select m_name from movie_producer group by m_name having count(producer_id) > 1;
+ m_name
+ --------------------------
+ Dil Chahta Hai 
+Sholey
+ Zindagi Na Milegi Dobara
+ (3 rows)
+
+postgres=# select a_name from actor where role = 'Lead Actor';
+ a_name
+ ------------------
+ Amitabh Bachchan
+ Aamir Khan
+ Hrithik Roshan 
+(3 rows)
+
+postgres=# select distinct a_name from movie_actor where m_name in (select m_name from movie_actor where a_name = 'Aamir Khan');
+ a_name
+ --------------- 
+Aamir Khan 
+Farhan Akhtar 
+(2 rows)
+
+postgres=# select count(a_name) from movie_actor where m_name = 'Sholey';
+ Count
+ ------- 
+1 
+(1 row)
+
+postgres=# create table branch (bid integer primary key, brname char(30) not null, brcity char(20) not null);
+ CREATE TABLE 
+Postgres=# create table customer (cno integer primary key, cname char(30) not null, caddr char(35) not null, city char(20) not nu ll);
+ CREATE TABLE
+postgres=# create table loan_application (lno integer primary key, l_amt_require money not null, l_amt_approved money not null, l_date date not null);
+ CREATE TABLE
+postgres=# create table ternary (bid integer, cno integer, lno integer, primary key (bid, cno, lno), foreign key (bid) references branch(bid), foreign key (cno) references customer(cno), foreign key (lno) references loan_application(lno));
+ CREATE TABLE 
+Postgres=# select * from branch;
+ bid | brname | brcity
+ -----+--------------------------------+---------------------- 
+1 | Main Branch | Nagar
+2| Karve Nagar Branch | Karve Nagar 
+3 | ShivajiNagar Branch | ShivajiNagar
+ (3 rows)
+
+postgres=# select * from customer; 
+cno | cname | caddr | city
+ -----+--------------------------------+-------------------------------------+---------------------- 
+106 | Ravi Patil | 12 Ganesh Lane | Pune 
+107 | Sneha Deshmukh | 34 Vasant Vihar | Nagpur 
+108 | Amit Kothari | 56 Rajendra Nagar | Mumbai
+ 109 | Priya Kulkarni | 78 Shivaji Nagar | Kolhapur 110
+ | Nikhil Sharma | 90 Laxmi Road | Aurangabad
+ (5 rows)
+
+postgres=# select * from loan_application; 
+lno | l_amt_require | l_amt_approved | l_date
+ ------+---------------+----------------+------------ 
+1001 | $150,000.00 | $140,000.00 | 2024-07-15
+ 1002 | $200,000.00 | $180,000.00 | 2024-08-20 
+1003 | $250,000.00 | $220,000.00 | 2024-09-10 
+1004 | $300,000.00 | $290,000.00 | 2024-07-25
+ 1005 | $50,000.00 | $45,000.00 | 2024-08-15
+ (5 rows)
+
+Postgres=#select * from ternary;
+ bid | cno | lno 
+-----+-----+------ 
+1 | 106 | 1001 1 | 107 | 1004 
+2| 108 | 1002 2 | 109 | 1005
+ 3 | 110 | 1003
+(5 rows)
+
+postgres=# select sum(l_amt_approved) from loan_application l join ternary t on l.lno = t.lno where t.bid = (select bid from branch where brcity = 'Nagar'); 
+Sum
+ ------------- 
+$430,000.00 
+(1 row)
+
+postgres=# select cname from customer c join ternary t on c.cno = t.cno where t.bid = (select bid from branch where brcity = 'Karve Nagar');
+ cname 
+-------------------------------- 
+Amit Kothari
+ Priya Kulkarni 
+(2 rows) 
+
+postgres=# select distinct c.cname from customer c join ternary t on c.cno = t.cno join branch b on t.bid = b.bid where c.city = b.brcity;
+ Cname
+ -------------------------------- 
+Amit Kothari 
+Nikhil Sharma 
+Priya Kulkarni
+ Ravi Patil
+ Sneha Deshmukh
+ (5 rows)
+
+postgres=# select c.cname from customer c join ternary t on c.cno = t.cno join loan_application l on t.lno = l.lno where l.l_amt_approved < l.l_amt_require;
+ Cname
+ -------------------------------- 
+Ravi Patil
+ Sneha Deshmukh
+ Amit Kothari
+ Priya Kulkarni
+ Nikhil Sharma 
+(5 rows)
+
+postgres=# select c.cname, b.brname from customer c join ternary t on c.cno = t.cno join loan_application l on t.lno = l.lno join branch b on t.bid = b.bid where extract(month from l.l_date) = 7;
+ cname | brname
+ --------------------------------+--------------------------------
+ Ravi Patil | Main Branch 
+Sneha Deshmukh | Main Branch
+ (2 rows)
+
+ postgres=# select c.cname from customer c join ternary t on c.cno = t.cno join loan_application l on t.lno = l.lno where l.l_amt_require > '100000';
+ cname 
+ Ravi Patil 
+Sneha Deshmukh
+ Amit Kothari 
+Nikhil Sharma
+ (4 rows)
+
+ postgres=# select max(l_amt_approved) from loan_application;
+ Max
+ ------------- 
+$290,000.00
+ (1 row) 
+
+postgres=# select count(c.cno) from customer c join ternary t on c.cno = t.cno where t.bid = (select bid from branch where brcity = 'ShivajiNagar');
+ Count
+ ------- 
+1
+ (1 row)
+
+postgres=# select c.cname from customer c join ternary t on c.cno = t.cno join loan_application l on t.lno = l.lno where l.l_amt_require between '200000' and '400000';
+ Cname
+ -------------------------------- 
+Sneha Deshmukh 
+Amit Kothari
+ Nikhil Sharma
+ (3 rows)
+
+postgres=# select b.brname, c.cname from customer c join ternary t on c.cno = t.cno join branch b on t.bid = b.bid;
+ brname | cname 
+--------------------------------+-------------------------------- 
+Main Branch | Ravi Patil 
+Main Branch | Sneha Deshmukh 
+Karve Nagar Branch | Amit Kothari 
+Karve Nagar Branch | Priya Kulkarni 
+ShivajiNagar Branch | Nikhil Sharma
+ (5 rows)
+
+
+

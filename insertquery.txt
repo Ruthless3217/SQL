@@ -1,0 +1,35 @@
+INSERT INTO Project (pno, pname, ptype, duration) 
+VALUES (1, 'ERP', 'Software', 12),
+       (2, 'CRM', 'Software', 8),
+       (3, 'Website Development', 'Web', 6);
+
+
+INSERT INTO Employee (eno, ename, qualification, joining_date) 
+VALUES (101, 'John Doe', 'MCA', '2021-01-15'),
+       (102, 'Jane Smith', 'B.Tech', '2020-09-20'),
+       (103, 'Mike Brown', 'MCA', '2019-05-10');
+
+
+
+INSERT INTO WorksOn (pno, eno, start_date, no_of_hours_worked) 
+VALUES (1, 101, '2021-02-01', 350),
+       (1, 102, '2021-03-01', 120),
+       (2, 103, '2020-10-01', 400),
+       (3, 101, '2022-01-01', 250);
+
+
+INSERT INTO Area (aname, area_type) 
+VALUES ('Hadapsar', 'urban'),
+       ('Kothrud', 'urban'),
+       ('Shirwal', 'rural');
+
+
+INSERT INTO Person (pno, pname, birthdate, income, aname) 
+VALUES (201, 'Rohit Tupe', '1955-08-12', 15000, 'Hadapsar'),
+       (202, 'Anjali Patil', '1948-06-20', 12000, 'Shirwal'),
+       (203, 'Sneha Tupe', '1980-12-15', 18000, 'Hadapsar'),
+       (204, 'Vikas Deshmukh', '1960-09-09', 25000, 'Kothrud');
+
+
+
+

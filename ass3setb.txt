@@ -1,0 +1,112 @@
+CREATE TABLE Project (
+    pno INT PRIMARY KEY,
+    pname VARCHAR(30) NOT NULL,
+    ptype VARCHAR(20),
+    duration INT CHECK (duration > 0) -- Ensure duration is greater than 0
+);
+
+
+CREATE TABLE Employee (
+    eno INT PRIMARY KEY,
+    ename VARCHAR(20),
+    qualification VARCHAR(15),
+    joining_date DATE
+);
+
+
+CREATE TABLE WorksOn (
+    pno INT,
+    eno INT,
+    start_date DATE,
+    no_of_hours_worked INT,
+    PRIMARY KEY (pno, eno),
+    FOREIGN KEY (pno) REFERENCES Project(pno) ON DELETE CASCADE,
+    FOREIGN KEY (eno) REFERENCES Employee(eno) ON DELETE CASCADE
+);
+
+
+CREATE VIEW employees_on_erp AS
+SELECT e.eno, e.ename
+FROM Employee e
+JOIN WorksOn w ON e.eno = w.eno
+JOIN Project p ON w.pno = p.pno
+WHERE p.pname = 'ERP';
+
+
+
+CREATE VIEW project_details_more_than_6_months AS
+SELECT p.pno, p.pname, p.ptype, p.duration, w.start_date
+FROM Project p
+JOIN WorksOn w ON p.pno = w.pno
+WHERE p.duration > 6
+ORDER BY w.start_date;
+
+
+
+CREATE VIEW employees_with_MCA AS
+SELECT eno, ename, qualification, joining_date
+FROM Employee
+WHERE qualification = 'MCA';
+
+
+CREATE VIEW employees_worked_more_than_300_hours AS
+SELECT e.ename, p.pname
+FROM Employee e
+JOIN WorksOn w ON e.eno = w.eno
+JOIN Project p ON w.pno = p.pno
+WHERE w.no_of_hours_worked > 300;
+
+
+
+CREATE TABLE Area (
+    aname VARCHAR(20) PRIMARY KEY,
+    area_type CHAR(5) CHECK (area_type IN ('urban', 'rural')) 
+);
+
+
+CREATE TABLE Person (
+    pno INT PRIMARY KEY,
+    pname VARCHAR(20),
+    birthdate DATE,
+    income MONEY,
+    aname VARCHAR(20),
+    FOREIGN KEY (aname) REFERENCES Area(aname) ON DELETE CASCADE
+);
+
+
+
+CREATE VIEW persons_with_tupe_in_hadapsar AS
+SELECT p.pname
+FROM Person p
+JOIN Area a ON p.aname = a.aname
+WHERE p.pname LIKE '%Tupe%' AND a.aname = 'Hadapsar';
+
+
+CREATE VIEW count_rural_income_above_10000 AS
+SELECT COUNT(p.pno) AS person_count
+FROM Person p
+JOIN Area a ON p.aname = a.aname
+WHERE a.area_type = 'rural' AND p.income > 10000;
+
+
+
+CREATE VIEW area_wise_people_above_60 AS
+SELECT a.aname, COUNT(p.pno) AS person_count
+FROM Person p
+JOIN Area a ON p.aname = a.aname
+WHERE DATEDIFF(YEAR, p.birthdate, GETDATE()) > 60
+GROUP BY a.aname;
+
+
+CREATE VIEW area_person_max_income AS
+SELECT a.aname, p.pname, p.income
+FROM Person p
+JOIN Area a ON p.aname = a.aname
+WHERE (a.aname, p.income) IN (
+    SELECT a.aname, MAX(p.income)
+    FROM Person p
+    JOIN Area a ON p.aname = a.aname
+    GROUP BY a.aname
+)
+ORDER BY a.aname;
+
